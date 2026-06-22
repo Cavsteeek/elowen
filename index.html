@@ -4,26 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algebra Adventure: Expanding & Simplifying Expressions</title>
+    <title>Math Algebra Lesson</title>
     <style>
-        /* SEN-Friendly Style Guide: Soft pastel, high-contrast, massive clean fonts */
         :root {
             --bg-color: #FAF9F6;
-            /* Soft cream/ivory to prevent eye strain */
             --text-color: #282828;
-            /* Deep readable charcoal */
-            --primary-accent: #4682B4;
-            /* Soft steel blue for clear visual anchor */
-            --success-color: #2E7D32;
-            /* Soft gentle green */
-            --error-color: #C62828;
-            /* Gentle accessible red */
-            --card-bg: #FFFFFF;
+            --accent: #4682B4;
+            --green: #2E7D32;
+            --red: #C62828;
         }
 
         * {
             box-sizing: border-box;
-            font-family: 'Lexend', 'Arial', sans-serif;
+            font-family: sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -31,7 +24,6 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,201 +31,140 @@
             padding: 20px;
         }
 
-        .presentation-container {
+        .box {
             width: 100%;
-            max-width: 960px;
-            height: 600px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
+            max-width: 800px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 30px;
             border: 2px solid #E0DED7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .slide {
             display: none;
-            height: 100%;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
         .slide.active {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: block;
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: var(--primary-accent);
-            margin-bottom: 20px;
+            color: var(--accent);
+            font-size: 2rem;
+            margin-bottom: 15px;
         }
 
-        p,
-        li {
-            font-size: 1.4rem;
+        p {
+            font-size: 1.2rem;
             margin-bottom: 12px;
         }
 
-        ul {
-            margin-left: 30px;
-            margin-bottom: 20px;
-        }
-
-        li {
-            margin-bottom: 16px;
-        }
-
-        .math-block {
+        .math {
             background: #F0F4F8;
-            padding: 15px 25px;
-            border-left: 6px solid var(--primary-accent);
+            padding: 15px;
+            border-left: 5px solid var(--accent);
+            font-family: monospace;
+            font-size: 1.4rem;
+            margin: 15px 0;
             border-radius: 4px;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 1.6rem;
-            margin: 20px 0;
-        }
-
-        /* Interactive Elements & Navigation Buttons */
-        .btn-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
+            line-height: 1.5;
         }
 
         .btn {
-            background-color: var(--primary-accent);
-            color: white;
+            background: var(--accent);
+            color: #FFF;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.3rem;
+            padding: 12px 24px;
+            font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            text-decoration: none;
+            margin-top: 15px;
             display: inline-block;
-            text-align: center;
+            text-decoration: none;
         }
 
-        .btn:hover {
-            background-color: #356690;
-            transform: translateY(-2px);
-        }
-
-        .btn-quiz {
-            background-color: #E2E8F0;
-            color: var(--text-color);
+        .quiz-btn {
+            background: #E2E8F0;
+            color: #282828;
+            border: 1px solid #CBD5E1;
+            padding: 12px;
             width: 100%;
             text-align: left;
-            margin-bottom: 12px;
-            border: 2px solid #CBD5E1;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            cursor: pointer;
         }
 
-        .btn-quiz:hover {
-            background-color: #CBD5E1;
-            color: var(--text-color);
-            transform: none;
+        .quiz-btn:hover {
+            background: #CBD5E1;
         }
 
-        .navigation-footer {
+        .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 2px solid #E2E8F0;
+            margin-top: 25px;
             padding-top: 15px;
-            margin-top: 20px;
+            border-top: 2px solid #E2E8F0;
         }
 
-        .progress-indicator {
+        .feedback {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
             font-size: 1.1rem;
-            color: #64748B;
             font-weight: bold;
         }
 
-        .feedback-box {
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 1.3rem;
-            display: none;
+        .good {
+            background: #E8F5E9;
+            color: var(--green);
+            border: 1px solid var(--green);
         }
 
-        .feedback-success {
-            background-color: #E8F5E9;
-            color: var(--success-color);
-            border: 2px solid var(--success-color);
-        }
-
-        .feedback-error {
-            background-color: #FFEBEE;
-            color: var(--error-color);
-            border: 2px solid var(--error-color);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .bad {
+            background: #FFEBEE;
+            color: var(--red);
+            border: 1px solid var(--red);
         }
     </style>
 </head>
 
 <body>
 
-    <div class="presentation-container">
-
-        <div class="slide active" id="slide-1">
+    <div class="box">
+        <div class="slide active" id="s1">
             <h1>Welcome to Your Algebra Adventure!</h1>
             <p>Target Learners: Ages 11–14</p>
-            <p>Today we are going to learn how to unlock expressions and master algebra brackets like an absolute pro.
-            </p>
-            <p>Get your digital notepad or a pen and paper ready!</p>
-            <div class="btn-container">
-                <button class="btn" onclick="nextSlide()">Let's Get Started! →</button>
-            </div>
+            <p>Today we are going to learn how to unlock expressions and master algebra brackets like a pro.</p>
+            <button class="btn" onclick="go(2)">Let's Get Started! &rarr;</button>
         </div>
 
-        <div class="slide" id="slide-2">
+        <div class="slide" id="s2">
             <h1>Our Learning Goals</h1>
-            <p>By the end of this lesson, you will be able to:</p>
-            <ul>
-                <li>📦 Understand what algebraic expressions are</li>
-                <li>⚡ Expand brackets using multiplication rules</li>
-                <li>🍏 Simplify expression groupings by collecting like terms</li>
-                <li>🏆 Tackle multi-step advanced algebra problems</li>
-            </ul>
+            <p>&bull; Understand what algebraic expressions are</p>
+            <p>&bull; Expand brackets using multiplication rules</p>
+            <p>&bull; Simplify expressions by collecting like terms</p>
+            <p>&bull; Tackle multi-step advanced algebra challenges</p>
         </div>
 
-        <div class="slide" id="slide-3">
+        <div class="slide" id="s3">
             <h1>Stage 1 – Beginner: What is an Expression?</h1>
-            <p>Algebra uses secret-code codes. Let's break down the basic components:</p>
-            <ul>
-                <li><strong>Variable:</strong> A letter (like <em>x</em> or <em>y</em>) that stands in for an unknown
-                    number.</li>
-                <li><strong>Coefficient:</strong> The number multiplied by a variable (e.g., the <strong>3</strong>
-                    inside <em>3x</em>).</li>
-                <li><strong>Term:</strong> A single standalone mathematical chunk (e.g., <em>5x</em>, <em>2</em>, or
-                    <em>y</em>).</li>
-                <li><strong>Expression:</strong> Code blocks built out of terms joined together (e.g., <em>3x + 2</em>).
-                </li>
-            </ul>
+            <p><strong>Variable:</strong> A letter (like <em>x</em> or <em>y</em>) that stands for an unknown number.
+            </p>
+            <p><strong>Coefficient:</strong> The number multiplying a variable (e.g., the 3 in 3x).</p>
+            <p><strong>Term:</strong> A single mathematical building block (e.g., 5x, 2, or y).</p>
+            <p><strong>Expression:</strong> Code blocks built out of terms joined together (e.g., 3x + 2).</p>
         </div>
 
-        <div class="slide" id="slide-4">
+        <div class="slide" id="s4">
             <h1>Understanding Brackets</h1>
             <p>In algebra, brackets mean <strong>"multiply everything inside!"</strong></p>
-            <p>When you see a multiplier sitting right outside, it distributes to every term separated inside:</p>
-            <div class="math-block">
+            <div class="math">
                 Example: 3(x + 2)<br>
                 Step 1: Multiply 3 by x &rarr; 3x<br>
                 Step 2: Multiply 3 by 2 &rarr; 6<br>
@@ -241,22 +172,21 @@
             </div>
         </div>
 
-        <div class="slide" id="slide-5">
+        <div class="slide" id="s5">
             <h1>Stage 2 – Explorer: Guided Practice</h1>
-            <p>Let's check out our next core structural example. Watch how the outside multiplier hits both items:</p>
-            <div class="math-block">
+            <p>Watch how the outside multiplier distributes evenly to both individual items inside:</p>
+            <div class="math">
                 Example: 4(a + 5)<br>
                 &bull; 4 times a &rarr; 4a<br>
                 &bull; 4 times 5 &rarr; 20<br>
                 Resulting Expression = 4a + 20
             </div>
-            <p>No terms left behind inside the package!</p>
         </div>
 
-        <div class="slide" id="slide-6">
+        <div class="slide" id="s6">
             <h1>Multi-Step: The Extra Term</h1>
-            <p>What if there is an extra term hanging around outside the party? Let's trace it out step-by-step:</p>
-            <div class="math-block">
+            <p>What if there is an extra term hanging around outside the brackets?</p>
+            <div class="math">
                 Expand & Simplify: 2(x + 3) + x<br>
                 Step 1 (Expand bracket): 2x + 6 + x<br>
                 Step 2 (Group like x terms): 2x + x + 6<br>
@@ -264,122 +194,95 @@
             </div>
         </div>
 
-        <div class="slide" id="slide-7">
+        <div class="slide" id="s7">
             <h1>Watching Your Operation Signs</h1>
-            <p>Be extremely careful when tracking subtraction signs during cleanups:</p>
-            <div class="math-block">
-                Expand & Simplify: 5(y + 1) − 2y<br>
-                Step 1 (Multiply Bracket): 5y + 5 − 2y<br>
-                Step 2 (Combine the y terms): 5y − 2y + 5<br>
+            <p>Be careful tracking signs during combining cleanups:</p>
+            <div class="math">
+                Expand & Simplify: 5(y + 1) &minus; 2y<br>
+                Step 1 (Multiply Bracket): 5y + 5 &minus; 2y<br>
+                Step 2 (Combine the y terms): 5y &minus; 2y + 5<br>
                 Final Answer = 3y + 5
             </div>
         </div>
 
-        <div class="slide" id="slide-8">
+        <div class="slide" id="s8">
             <h1>Stage 3 – Builder: Practice Time!</h1>
-            <p>Work out the answer on paper, then click the option you think is correct:</p>
-            <p><strong>Question: Expand and simplify: 4(n + 3) − 2n</strong></p>
-
-            <button class="btn btn-quiz" onclick="checkAnswer('wrong-1')">A) 2n + 3</button>
-            <button class="btn btn-quiz" onclick="checkAnswer('correct')">B) 2n + 12 (Correct Answer)</button>
-            <button class="btn btn-quiz" onclick="checkAnswer('wrong-2')">C) 4n + 12</button>
-
-            <div id="quiz-feedback" class="feedback-box"></div>
+            <p><strong>Question: Expand and simplify: 4(n + 3) &minus; 2n</strong></p>
+            <button class="quiz-btn" onclick="check('wrong1')">A) 2n + 3</button>
+            <button class="quiz-btn" onclick="check('right')">B) 2n + 12</button>
+            <button class="quiz-btn" onclick="check('wrong2')">C) 4n + 12</button>
+            <div id="feed" class="feedback"></div>
         </div>
 
-        <div class="slide" id="slide-9">
+        <div class="slide" id="s9">
             <h1>Stage 4 – Advanced: Perimeter Problem</h1>
-            <p>Let's use our skills to solve real geometrical space calculations:</p>
             <p><strong>A rectangular field has a length of (x + 3) meters and a width of (x + 1) meters. What is the
                     total combined perimeter expression?</strong></p>
             <p><em>Hint: Perimeter = 2(Length) + 2(Width)</em></p>
-            <div class="btn-container">
-                <button class="btn" onclick="revealAdvanced()">Show Master Solution &rarr;</button>
-            </div>
-            <div id="advanced-solution" class="math-block" style="display:none;">
+            <button class="btn"
+                onclick="document.getElementById('sol').style.display='block'; document.getElementById('nxt').style.display='inline-block';">Show
+                Master Solution</button>
+            <div id="sol" class="math" style="display:none;">
                 Total Perimeter = 2(x + 3) + 2(x + 1)<br>
                 Expand terms &rarr; 2x + 6 + 2x + 2<br>
                 Group & Combine &rarr; 4x + 8 meters!
             </div>
         </div>
 
-        <div class="slide" id="slide-10">
+        <div class="slide" id="s10">
             <h1>Algebra Mastery Unlocked! 🏆</h1>
             <p>Incredible job! You have safely completed all 4 processing zones:</p>
-            <ul>
-                <li>✅ <strong>Beginner:</strong> Decoded brackets & coefficients.</li>
-                <li>✅ <strong>Explorer:</strong> Mastered multi-step expansions.</li>
-                <li>✅ <strong>Builder:</strong> Proved independent processing skills.</li>
-                <li>✅ <strong>Advanced:</strong> Solved spatial geometric problems.</li>
-            </ul>
-            <p>You are officially an Algebra Champion! Keep practicing.</p>
+            <p>&bull; <strong>Beginner:</strong> Decoded brackets & coefficients.</p>
+            <p>&bull; <strong>Explorer:</strong> Mastered multi-step expansions.</p>
+            <p>&bull; <strong>Builder:</strong> Proved independent processing skills.</p>
+            <p>&bull; <strong>Advanced:</strong> Solved spatial geometric problems.</p>
         </div>
 
-        <div class="navigation-footer" id="nav-footer">
-            <button class="btn" id="prev-btn" onclick="prevSlide()" style="visibility: hidden;">&larr; Back</button>
-            <span class="progress-indicator" id="progress-text">Slide 1 of 10</span>
-            <button class="btn" id="next-btn" onclick="nextSlide()">Next &rarr;</button>
+        <div class="footer" id="foot">
+            <button class="btn" id="back" onclick="back()" style="display:none;">&larr; Back</button>
+            <span id="prog">Slide 1 of 10</span>
+            <button class="btn" id="nxt" onclick="nxt()">Next &rarr;</button>
         </div>
-
     </div>
 
     <script>
-        let currentSlide = 1;
-        const totalSlides = 10;
+        let current = 1;
+        const total = 10;
 
-        function updateNavigation() {
-            // Hide/Show slides systematically
-            for (let i = 1; i <= totalSlides; i++) {
-                document.getElementById(`slide-${i}`).classList.remove('active');
-            }
-            document.getElementById(`slide-${currentSlide}`).classList.add('active');
-
-            // Manage Footer Control visibilities safely
-            document.getElementById('prev-btn').style.visibility = (currentSlide === 1) ? 'hidden' : 'visible';
-            document.getElementById('next-btn').style.visibility = (currentSlide === totalSlides || currentSlide === 8) ? 'hidden' : 'visible';
-
-            // If we are on the quiz slide, hide the global next button so they are forced to engage with the choices
-            if (currentSlide === 8) {
-                document.getElementById('next-btn').style.visibility = 'hidden';
-            }
-
-            document.getElementById('progress-text').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+        function go(target) {
+            current = target;
+            update();
         }
 
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateNavigation();
-            }
+        function nxt() {
+            if (current < total) { current++; update(); }
         }
 
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateNavigation();
-            }
+        function back() {
+            if (current > 1) { current--; update(); }
         }
 
-        function checkAnswer(status) {
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.style.display = 'block';
+        function update() {
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`s${i}`).classList.remove('active');
+            }
+            document.getElementById(`s${current}`).classList.add('active');
 
-            if (status === 'correct') {
-                feedback.className = "feedback-box feedback-success";
-                feedback.innerHTML = "<strong>🌟 Outstanding! That is Correct!</strong><br>Expanding 4(n + 3) gives 4n + 12. Then subtracting 2n simplifies perfectly down to 2n + 12!<br><br><button class='btn' onclick='nextSlide()'>Advance to Stage 4 &rarr;</button>";
-            } else if (status === 'wrong-1') {
-                feedback.className = "feedback-box feedback-error";
-                feedback.innerHTML = "<strong>🔍 Not quite. Remember to check your multiplier!</strong><br>It looks like you forgot to multiply the 4 by the 3 inside the bracket. Try running 4 &times; 3 again!";
+            document.getElementById('back').style.display = (current === 1) ? 'none' : 'inline-block';
+            document.getElementById('nxt').style.display = (current === total || current === 8 || current === 9) ? 'none' : 'inline-block';
+            document.getElementById('prog').innerText = `Slide ${current} of ${total}`;
+        }
+
+        function check(ans) {
+            const f = document.getElementById('feed');
+            f.style.display = 'block';
+            if (ans === 'right') {
+                f.className = "feedback good";
+                f.innerHTML = "🌟 Correct! 4(n + 3) - 2n = 4n + 12 - 2n = 2n + 12.<br><br><button class='btn' onclick='go(9)'>Go to Stage 4 &rarr;</button>";
             } else {
-                feedback.className = "feedback-box feedback-error";
-                feedback.innerHTML = "<strong>🔍 Close! Let's check the subtraction step.</strong><br>You successfully multiplied out the bracket to get 4n + 12, but don't forget to subtract the trailing 2n away from your 4n!";
+                f.className = "feedback bad";
+                f.innerHTML = "🔍 Not quite. Remember to multiply the number outside (4) by BOTH terms inside the bracket first, then group the n terms!";
             }
-        }
-
-        function revealAdvanced() {
-            document.getElementById('advanced-solution').style.display = 'block';
-            // Show the next button once they interact with the challenge solution
-            document.getElementById('next-btn').style.visibility = 'visible';
         }
     </script>
 </body>
