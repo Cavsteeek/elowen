@@ -3,287 +3,1538 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Algebra Lesson</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Unpack the Brackets — Expanding & Simplifying Algebra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-color: #FAF9F6;
-            --text-color: #282828;
-            --accent: #4682B4;
-            --green: #2E7D32;
-            --red: #C62828;
+            --ink: #1F2330;
+            --paper: #FBF6EC;
+            --paper-soft: #F3ECDC;
+            --navy: #2B3A55;
+            --coral: #E8714A;
+            --coral-dark: #C8552F;
+            --mint: #7FBEA0;
+            --mint-dark: #5C9C7E;
+            --gold: #F0B83C;
+            --line: #DCD2B8;
+            --radius: 20px;
+            --shadow: 0 6px 18px rgba(43, 58, 85, 0.12);
+            --font-display: 'Baloo 2', system-ui, sans-serif;
+            --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            --base-size: 16px;
         }
 
         * {
             box-sizing: border-box;
-            font-family: sans-serif;
+        }
+
+        html,
+        body {
             margin: 0;
             padding: 0;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: var(--font-body);
+            background: var(--paper);
+            color: var(--ink);
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: var(--base-size);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .box {
+        body.dyslexia {
+            letter-spacing: 0.02em;
+            word-spacing: 0.08em;
+            line-height: 1.8;
+        }
+
+        body.dyslexia * {
+            font-weight: 500 !important;
+        }
+
+        /* background texture - soft paper dots, calm not busy */
+        body {
+            background-image: radial-gradient(circle at 1px 1px, rgba(43, 58, 85, 0.06) 1px, transparent 0);
+            background-size: 22px 22px;
+        }
+
+        .app {
             width: 100%;
-            max-width: 800px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 30px;
-            border: 2px solid #E0DED7;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 480px;
+            min-height: 100vh;
+            background: var(--paper);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: var(--shadow);
         }
 
-        .slide {
+        /* ---------- TOP BAR ---------- */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px 10px;
+            gap: 10px;
+        }
+
+        .stage-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .stage-dot {
+            width: 28px;
+            height: 8px;
+            border-radius: 6px;
+            background: var(--line);
+            transition: background .3s, transform .3s;
+        }
+
+        .stage-dot.active {
+            background: var(--coral);
+        }
+
+        .stage-dot.done {
+            background: var(--mint-dark);
+        }
+
+        .access-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--navy);
+            background: var(--paper);
+            color: var(--navy);
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .access-btn:focus-visible,
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        /* ---------- ACCESSIBILITY PANEL ---------- */
+        .access-panel {
+            position: absolute;
+            top: 60px;
+            right: 14px;
+            z-index: 30;
+            background: white;
+            border: 2px solid var(--navy);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: var(--shadow);
+            width: 230px;
             display: none;
         }
 
-        .slide.active {
+        .access-panel.open {
             display: block;
         }
 
-        h1 {
-            color: var(--accent);
-            font-size: 2rem;
-            margin-bottom: 15px;
+        .access-panel h4 {
+            margin: 0 0 8px;
+            font-family: var(--font-display);
+            font-size: 15px;
+            color: var(--navy);
         }
 
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 12px;
+        .access-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
         }
 
-        .math {
-            background: #F0F4F8;
-            padding: 15px;
-            border-left: 5px solid var(--accent);
-            font-family: monospace;
-            font-size: 1.4rem;
-            margin: 15px 0;
-            border-radius: 4px;
-            line-height: 1.5;
+        .access-row span {
+            flex: 1;
         }
 
-        .btn {
-            background: var(--accent);
-            color: #FFF;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 6px;
+        .stepper {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .stepper button {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--navy);
+            background: var(--paper-soft);
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 15px;
-            display: inline-block;
-            text-decoration: none;
+            font-size: 14px;
         }
 
-        .quiz-btn {
-            background: #E2E8F0;
-            color: #282828;
-            border: 1px solid #CBD5E1;
-            padding: 12px;
+        .toggle {
+            width: 42px;
+            height: 24px;
+            border-radius: 14px;
+            background: var(--line);
+            position: relative;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+        }
+
+        .toggle.on {
+            background: var(--mint-dark);
+        }
+
+        .toggle .knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            transition: left .2s;
+        }
+
+        .toggle.on .knob {
+            left: 21px;
+        }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .stage-label {
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--coral-dark);
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 6px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .slide {
+            animation: fadein .35s ease;
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .slide {
+                animation: none;
+            }
+        }
+
+        h1.slide-title {
+            font-family: var(--font-display);
+            font-size: 28px;
+            color: var(--navy);
+            margin: 6px 0 10px;
+            line-height: 1.15;
+            font-weight: 700;
+        }
+
+        h2.slide-sub {
+            font-family: var(--font-display);
+            font-size: 19px;
+            color: var(--coral-dark);
+            margin: 0 0 14px;
+            font-weight: 600;
+        }
+
+        p,
+        li {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .lead {
+            font-size: 1.05em;
+            color: #3A3F4D;
+            margin-bottom: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .card.navy {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+
+        .card.navy .term {
+            color: var(--gold);
+        }
+
+        .card.coral-edge {
+            border-color: var(--coral);
+        }
+
+        .term-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+
+        .term-row .label {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--coral-dark);
+            min-width: 96px;
+        }
+
+        .expr {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.3em;
+            color: var(--navy);
+        }
+
+        /* Bracket "unpack" visual — the signature device */
+        .unpack-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: var(--paper-soft);
+            border-radius: 16px;
+            padding: 18px 14px;
+            margin: 10px 0 16px;
+        }
+
+        .flap {
+            display: inline-block;
+            font-size: 1.5em;
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--navy);
+            transition: transform .5s ease, color .5s;
+        }
+
+        .flap.opened {
+            color: var(--coral);
+            transform: scale(1.08);
+        }
+
+        .step-reveal-btn {
+            display: block;
+            margin: 8px auto 0;
+            background: var(--coral);
+            color: white;
+            border: none;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .step-line {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity .4s ease;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 1.15em;
+            color: var(--navy);
+            margin-top: 6px;
+        }
+
+        .step-line.show {
+            opacity: 1;
+            max-height: 80px;
+        }
+
+        ul.key-list {
+            padding-left: 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        ul.key-list li {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+
+        ul.key-list li .dot {
+            flex: 0 0 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--mint-dark);
+            margin-top: 8px;
+        }
+
+        /* Buttons / answer options */
+        .option-btn {
+            display: block;
             width: 100%;
             text-align: left;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            background: white;
+            border: 2px solid var(--line);
+            border-radius: 14px;
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            font-family: var(--font-body);
+            font-size: 1em;
+            color: var(--ink);
             cursor: pointer;
+            transition: border-color .2s, background .2s;
         }
 
-        .quiz-btn:hover {
-            background: #CBD5E1;
+        .option-btn:hover {
+            border-color: var(--coral);
         }
 
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 2px solid #E2E8F0;
+        .option-btn.correct {
+            background: #EAF6EF;
+            border-color: var(--mint-dark);
+        }
+
+        .option-btn.incorrect {
+            background: #FBEAE5;
+            border-color: var(--coral-dark);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
         }
 
         .feedback {
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
+            margin-top: 8px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.97em;
             display: none;
-            font-size: 1.1rem;
-            font-weight: bold;
         }
 
-        .good {
-            background: #E8F5E9;
-            color: var(--green);
-            border: 1px solid var(--green);
+        .feedback.show {
+            display: block;
+            animation: fadein .3s ease;
         }
 
-        .bad {
-            background: #FFEBEE;
-            color: var(--red);
-            border: 1px solid var(--red);
+        .feedback.correct {
+            background: #EAF6EF;
+            color: #3D6E54;
+            border: 1.5px solid var(--mint-dark);
+        }
+
+        .feedback.incorrect {
+            background: #FBEAE5;
+            color: #8C3A20;
+            border: 1.5px solid var(--coral-dark);
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 13px 14px;
+            font-size: 1.05em;
+            border: 2px solid var(--line);
+            border-radius: 14px;
+            font-family: var(--font-body);
+            margin-bottom: 10px;
+            background: white;
+            color: var(--ink);
+        }
+
+        .answer-input:focus {
+            border-color: var(--coral);
+            outline: none;
+        }
+
+        .check-btn {
+            background: var(--navy);
+            color: white;
+            border: none;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 11px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .check-btn:active {
+            transform: scale(0.97);
+        }
+
+        .hint-toggle {
+            font-size: 0.9em;
+            color: var(--coral-dark);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            margin-top: 4px;
+        }
+
+        .hint-box {
+            display: none;
+            background: var(--paper-soft);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            font-size: 0.93em;
+        }
+
+        .hint-box.show {
+            display: block;
+        }
+
+        .match-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-pair {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .match-card {
+            flex: 1;
+            background: white;
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            padding: 10px 12px;
+            text-align: center;
+            font-family: var(--font-display);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: var(--navy);
+        }
+
+        .match-card.selected {
+            border-color: var(--coral);
+            background: #FFF3EE;
+        }
+
+        .match-card.matched-correct {
+            border-color: var(--mint-dark);
+            background: #EAF6EF;
+            cursor: default;
+        }
+
+        .match-card.matched-wrong {
+            border-color: var(--coral-dark);
+            background: #FBEAE5;
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .objectives-list li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 1.02em;
+        }
+
+        .check-icon {
+            flex: 0 0 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--mint);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* WELCOME / COMPLETION full screens */
+        .full-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px 24px;
+        }
+
+        .full-screen.navy-bg {
+            background: var(--navy);
+            color: white;
+            border-radius: 0 0 28px 28px;
+            margin: -6px -20px 0;
+            padding: 50px 28px 40px;
+        }
+
+        .full-screen .icon-big {
+            font-size: 64px;
+            margin-bottom: 14px;
+        }
+
+        .full-screen h1 {
+            font-family: var(--font-display);
+            font-size: 32px;
+            margin: 0 0 10px;
+        }
+
+        .full-screen p {
+            font-size: 1.05em;
+            opacity: 0.92;
+            max-width: 340px;
+        }
+
+        .start-btn {
+            margin-top: 26px;
+            background: var(--coral);
+            color: white;
+            border: none;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 17px;
+            padding: 14px 34px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(232, 113, 74, 0.4);
+        }
+
+        .start-btn:active {
+            transform: scale(0.97);
+        }
+
+        .stars {
+            display: flex;
+            gap: 6px;
+            margin: 14px 0;
+        }
+
+        .stars span {
+            font-size: 30px;
+            animation: pop .5s ease backwards;
+        }
+
+        .stars span:nth-child(1) {
+            animation-delay: .1s;
+        }
+
+        .stars span:nth-child(2) {
+            animation-delay: .25s;
+        }
+
+        .stars span:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            padding: 8px 14px;
+            font-size: 0.85em;
+            font-family: var(--font-display);
+        }
+
+        /* ---------- NAV BAR ---------- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px 18px;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 140px;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 30px;
+            padding: 13px 0;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .nav-btn.back {
+            background: var(--paper-soft);
+            color: var(--navy);
+            border: 2px solid var(--line);
+        }
+
+        .nav-btn.next {
+            background: var(--coral);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .nav-progress {
+            font-size: 0.8em;
+            color: #8A8470;
+            font-family: var(--font-display);
+        }
+
+        .simplify-toggle-wrap {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .simplify-toggle-wrap button {
+            background: var(--paper-soft);
+            border: 1.5px solid var(--line);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-family: var(--font-body);
+        }
+
+        .quiz-result-box {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 6px solid var(--mint-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 14px auto;
+            font-family: var(--font-display);
+            font-size: 26px;
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        @media (min-width:520px) {
+            body {
+                align-items: center;
+            }
+
+            .app {
+                border-radius: 28px;
+                margin: 24px 0;
+                min-height: calc(100vh - 48px);
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="app" id="app">
 
-    <div class="box">
-        <div class="slide active" id="s1">
-            <h1>Welcome to Your Algebra Adventure!</h1>
-            <p>Target Learners: Ages 11–14</p>
-            <p>Today we are going to learn how to unlock expressions and master algebra brackets like a pro.</p>
-            <button class="btn" onclick="go(2)">Let's Get Started! &rarr;</button>
+        <div class="topbar" id="topbar" style="display:none;">
+            <div class="stage-dots" id="stageDots"></div>
+            <button class="access-btn" id="accessBtn" aria-label="Accessibility settings">Aa</button>
         </div>
 
-        <div class="slide" id="s2">
-            <h1>Our Learning Goals</h1>
-            <p>&bull; Understand what algebraic expressions are</p>
-            <p>&bull; Expand brackets using multiplication rules</p>
-            <p>&bull; Simplify expressions by collecting like terms</p>
-            <p>&bull; Tackle multi-step advanced algebra challenges</p>
-        </div>
-
-        <div class="slide" id="s3">
-            <h1>Stage 1 – Beginner: What is an Expression?</h1>
-            <p><strong>Variable:</strong> A letter (like <em>x</em> or <em>y</em>) that stands for an unknown number.
-            </p>
-            <p><strong>Coefficient:</strong> The number multiplying a variable (e.g., the 3 in 3x).</p>
-            <p><strong>Term:</strong> A single mathematical building block (e.g., 5x, 2, or y).</p>
-            <p><strong>Expression:</strong> Code blocks built out of terms joined together (e.g., 3x + 2).</p>
-        </div>
-
-        <div class="slide" id="s4">
-            <h1>Understanding Brackets</h1>
-            <p>In algebra, brackets mean <strong>"multiply everything inside!"</strong></p>
-            <div class="math">
-                Example: 3(x + 2)<br>
-                Step 1: Multiply 3 by x &rarr; 3x<br>
-                Step 2: Multiply 3 by 2 &rarr; 6<br>
-                Expanded Result = 3x + 6
+        <div class="access-panel" id="accessPanel">
+            <h4>Reading settings</h4>
+            <div class="access-row">
+                <span>Text size</span>
+                <div class="stepper">
+                    <button id="sizeDown" aria-label="Decrease text size">−</button>
+                    <button id="sizeUp" aria-label="Increase text size">+</button>
+                </div>
+            </div>
+            <div class="access-row">
+                <span>Easy-read spacing</span>
+                <button class="toggle" id="dyslexiaToggle" aria-label="Toggle easy-read spacing"><span
+                        class="knob"></span></button>
+            </div>
+            <div class="access-row">
+                <span>Simple wording</span>
+                <button class="toggle" id="simpleToggle" aria-label="Toggle simple wording"><span
+                        class="knob"></span></button>
             </div>
         </div>
 
-        <div class="slide" id="s5">
-            <h1>Stage 2 – Explorer: Guided Practice</h1>
-            <p>Watch how the outside multiplier distributes evenly to both individual items inside:</p>
-            <div class="math">
-                Example: 4(a + 5)<br>
-                &bull; 4 times a &rarr; 4a<br>
-                &bull; 4 times 5 &rarr; 20<br>
-                Resulting Expression = 4a + 20
-            </div>
+        <div class="content" id="content"></div>
+
+        <div class="navbar" id="navbar" style="display:none;">
+            <button class="nav-btn back" id="backBtn">← Back</button>
+            <span class="nav-progress" id="navProgress"></span>
+            <button class="nav-btn next" id="nextBtn">Next →</button>
         </div>
 
-        <div class="slide" id="s6">
-            <h1>Multi-Step: The Extra Term</h1>
-            <p>What if there is an extra term hanging around outside the brackets?</p>
-            <div class="math">
-                Expand & Simplify: 2(x + 3) + x<br>
-                Step 1 (Expand bracket): 2x + 6 + x<br>
-                Step 2 (Group like x terms): 2x + x + 6<br>
-                Final Answer = 3x + 6
-            </div>
-        </div>
-
-        <div class="slide" id="s7">
-            <h1>Watching Your Operation Signs</h1>
-            <p>Be careful tracking signs during combining cleanups:</p>
-            <div class="math">
-                Expand & Simplify: 5(y + 1) &minus; 2y<br>
-                Step 1 (Multiply Bracket): 5y + 5 &minus; 2y<br>
-                Step 2 (Combine the y terms): 5y &minus; 2y + 5<br>
-                Final Answer = 3y + 5
-            </div>
-        </div>
-
-        <div class="slide" id="s8">
-            <h1>Stage 3 – Builder: Practice Time!</h1>
-            <p><strong>Question: Expand and simplify: 4(n + 3) &minus; 2n</strong></p>
-            <button class="quiz-btn" onclick="check('wrong1')">A) 2n + 3</button>
-            <button class="quiz-btn" onclick="check('right')">B) 2n + 12</button>
-            <button class="quiz-btn" onclick="check('wrong2')">C) 4n + 12</button>
-            <div id="feed" class="feedback"></div>
-        </div>
-
-        <div class="slide" id="s9">
-            <h1>Stage 4 – Advanced: Perimeter Problem</h1>
-            <p><strong>A rectangular field has a length of (x + 3) meters and a width of (x + 1) meters. What is the
-                    total combined perimeter expression?</strong></p>
-            <p><em>Hint: Perimeter = 2(Length) + 2(Width)</em></p>
-            <button class="btn"
-                onclick="document.getElementById('sol').style.display='block'; document.getElementById('nxt').style.display='inline-block';">Show
-                Master Solution</button>
-            <div id="sol" class="math" style="display:none;">
-                Total Perimeter = 2(x + 3) + 2(x + 1)<br>
-                Expand terms &rarr; 2x + 6 + 2x + 2<br>
-                Group & Combine &rarr; 4x + 8 meters!
-            </div>
-        </div>
-
-        <div class="slide" id="s10">
-            <h1>Algebra Mastery Unlocked! 🏆</h1>
-            <p>Incredible job! You have safely completed all 4 processing zones:</p>
-            <p>&bull; <strong>Beginner:</strong> Decoded brackets & coefficients.</p>
-            <p>&bull; <strong>Explorer:</strong> Mastered multi-step expansions.</p>
-            <p>&bull; <strong>Builder:</strong> Proved independent processing skills.</p>
-            <p>&bull; <strong>Advanced:</strong> Solved spatial geometric problems.</p>
-        </div>
-
-        <div class="footer" id="foot">
-            <button class="btn" id="back" onclick="back()" style="display:none;">&larr; Back</button>
-            <span id="prog">Slide 1 of 10</span>
-            <button class="btn" id="nxt" onclick="nxt()">Next &rarr;</button>
-        </div>
     </div>
 
     <script>
-        let current = 1;
-        const total = 10;
+        /* ================= STATE ================= */
+        const state = {
+            slideIndex: 0,
+            fontSize: 16,
+            dyslexia: false,
+            simple: false,
+        };
 
-        function go(target) {
-            current = target;
-            update();
-        }
-
-        function nxt() {
-            if (current < total) { current++; update(); }
-        }
-
-        function back() {
-            if (current > 1) { current--; update(); }
-        }
-
-        function update() {
-            for (let i = 1; i <= total; i++) {
-                document.getElementById(`s${i}`).classList.remove('active');
+        /* simplified-wording text for word problems: key -> {normal, simple} */
+        const wording = {
+            cost: {
+                normal: "Apples cost (2a + 1) pence each. Sam buys 3 apples and Tom buys 2 apples. Write and simplify an expression for the total amount they spend.",
+                simple: "One apple costs (2a + 1) pence. Sam buys 3 apples. Tom buys 2 apples. Write one simple expression for how much they spend altogether."
+            },
+            perimeter: {
+                normal: "A rectangle has a length of (x + 3) and a width of (x + 1). Write a simplified expression for its perimeter.",
+                simple: "A rectangle's long side is (x + 3). Its short side is (x + 1). Perimeter means the distance all the way around. Write one simple expression for the perimeter."
+            },
+            area: {
+                normal: "A garden is split into two sections. One section covers 4(y + 2) m² and the other covers 3(y − 1) m². Write a simplified expression for the total area of the garden.",
+                simple: "A garden has two parts. Part A is 4(y + 2) m². Part B is 3(y − 1) m². Write one simple expression for the whole garden's area."
             }
-            document.getElementById(`s${current}`).classList.add('active');
+        };
 
-            document.getElementById('back').style.display = (current === 1) ? 'none' : 'inline-block';
-            document.getElementById('nxt').style.display = (current === total || current === 8 || current === 9) ? 'none' : 'inline-block';
-            document.getElementById('prog').innerText = `Slide ${current} of ${total}`;
+        /* ================= STAGE MAP (for dots) ================= */
+        /* index ranges per stage, used to color progress dots */
+        const stageRanges = [
+            { name: "Start", from: 0, to: 1 },
+            { name: "Stage 1", from: 2, to: 5 },
+            { name: "Stage 2", from: 6, to: 9 },
+            { name: "Stage 3", from: 10, to: 13 },
+            { name: "Stage 4", from: 14, to: 18 },
+            { name: "Quiz", from: 19, to: 22 },
+            { name: "Done", from: 23, to: 23 },
+        ];
+
+        /* ================= SLIDE DEFINITIONS ================= */
+        /* each slide returns {stageLabel, html, onMount} */
+
+        function slideWelcome() {
+            return `
+  <div class="full-screen navy-bg">
+    <div class="icon-big">🎒</div>
+    <h1>Unpack the Brackets</h1>
+    <p>A hands-on algebra adventure for expanding and simplifying expressions. Ages 11–14.</p>
+    <button class="start-btn" id="startBtn">Let's begin →</button>
+  </div>`;
         }
 
-        function check(ans) {
-            const f = document.getElementById('feed');
-            f.style.display = 'block';
-            if (ans === 'right') {
-                f.className = "feedback good";
-                f.innerHTML = "🌟 Correct! 4(n + 3) - 2n = 4n + 12 - 2n = 2n + 12.<br><br><button class='btn' onclick='go(9)'>Go to Stage 4 &rarr;</button>";
+        function slideObjectives() {
+            return `
+  <h1 class="slide-title">What you'll learn</h1>
+  <p class="lead">By the end of this lesson, you'll be able to:</p>
+  <ul class="objectives-list">
+    <li><span class="check-icon">✓</span> Explain what an algebraic expression is</li>
+    <li><span class="check-icon">✓</span> Expand brackets by multiplying every term inside</li>
+    <li><span class="check-icon">✓</span> Simplify expressions by collecting like terms</li>
+    <li><span class="check-icon">✓</span> Solve expressions with more than one step</li>
+    <li><span class="check-icon">✓</span> Use algebra to solve real-life problems</li>
+  </ul>
+  <div class="card coral-edge">
+    <p style="margin:0;">You'll move through four stages: <b>Beginner → Explorer → Builder → Advanced</b>, each one a little trickier than the last. Tap the <b>Aa</b> icon any time to change text size or turn on easy-read spacing.</p>
+  </div>`;
+        }
+
+        function slideS1Intro() {
+            return `
+  <h1 class="slide-title">What is an algebraic expression?</h1>
+  <p class="lead">It's a mix of numbers, letters, and operations — like a recipe written in maths.</p>
+  <div class="card">
+    <div class="term-row"><span class="label">Variable</span><span>a letter, like <span class="expr">x</span>, standing in for a number we don't know yet</span></div>
+    <div class="term-row"><span class="label">Coefficient</span><span>the number sitting in front of a variable — the <span class="expr">3</span> in <span class="expr">3x</span></span></div>
+    <div class="term-row"><span class="label">Term</span><span>one single piece of an expression, like <span class="expr">5x</span> or <span class="expr">2</span></span></div>
+    <div class="term-row"><span class="label">Expression</span><span>terms joined together, like <span class="expr">3x + 2</span></span></div>
+  </div>
+  <p>Keep these four words handy — you'll use them throughout the lesson.</p>`;
+        }
+
+        function slideS1Brackets() {
+            return `
+  <h1 class="slide-title">Brackets mean "share it out"</h1>
+  <p class="lead">A number sitting right outside a bracket multiplies <b>every single term</b> inside it. Nothing gets left out.</p>
+  <div class="unpack-box" id="unpackBox1">
+    <span class="flap" id="flapOuter">3(</span><span class="flap" id="flapX">x</span><span class="flap">+</span><span class="flap" id="flapTwo">2</span><span class="flap">)</span>
+  </div>
+  <button class="step-reveal-btn" id="revealStep1">Tap to unpack →</button>
+  <div class="step-line" id="resultLine1"></div>
+  <div class="card" style="margin-top:14px;">
+    <p style="margin:0;"><b>Why it works:</b> the 3 outside means "3 lots of everything inside." 3 lots of <span class="expr">x</span> is <span class="expr">3x</span>. 3 lots of <span class="expr">2</span> is <span class="expr">6</span>. Add them: <span class="expr">3x + 6</span>. This rule is called the <b>distributive property</b>.</p>
+  </div>`;
+        }
+
+        function slideS1Brackets_mount() {
+            const btn = document.getElementById('revealStep1');
+            if (!btn) return;
+            let revealed = false;
+            btn.addEventListener('click', () => {
+                if (revealed) return;
+                revealed = true;
+                document.getElementById('flapX').classList.add('opened');
+                document.getElementById('flapTwo').classList.add('opened');
+                const line = document.getElementById('resultLine1');
+                line.innerHTML = "3 × x = 3x &nbsp;&nbsp; 3 × 2 = 6 &nbsp;&nbsp;→&nbsp;&nbsp; <b>3x + 6</b>";
+                line.classList.add('show');
+                btn.textContent = "Unpacked! ✓";
+                btn.style.background = "var(--mint-dark)";
+            });
+        }
+
+        function slideS1Worked() {
+            return `
+  <h1 class="slide-title">One more, together</h1>
+  <p class="lead">Let's expand <span class="expr">4(a + 5)</span> the same way.</p>
+  <div class="unpack-box" id="unpackBox2">
+    <span class="flap">4(</span><span class="flap" id="flapA">a</span><span class="flap">+</span><span class="flap" id="flapFive">5</span><span class="flap">)</span>
+  </div>
+  <button class="step-reveal-btn" id="revealStep2">Tap to unpack →</button>
+  <div class="step-line" id="resultLine2"></div>
+  <div class="card" style="margin-top:14px;">
+    <p style="margin:0;"><b>Rule to remember:</b> multiply the outside number by <i>each</i> term inside the brackets — never just the first one.</p>
+  </div>
+  <div class="card navy" style="margin-top:10px;">
+    <p style="margin:0;">Quick check (in your head): what is <span class="term">2(b + 1)</span>? <br><span style="opacity:0.85; font-size:0.9em;">Answer: 2b + 2 — you'll see this type again soon.</span></p>
+  </div>`;
+        }
+
+        function slideS1Worked_mount() {
+            const btn = document.getElementById('revealStep2');
+            if (!btn) return;
+            let revealed = false;
+            btn.addEventListener('click', () => {
+                if (revealed) return;
+                revealed = true;
+                document.getElementById('flapA').classList.add('opened');
+                document.getElementById('flapFive').classList.add('opened');
+                const line = document.getElementById('resultLine2');
+                line.innerHTML = "4 × a = 4a &nbsp;&nbsp; 4 × 5 = 20 &nbsp;&nbsp;→&nbsp;&nbsp; <b>4a + 20</b>";
+                line.classList.add('show');
+                btn.textContent = "Unpacked! ✓";
+                btn.style.background = "var(--mint-dark)";
+            });
+        }
+
+        /* ---- Stage 2 ---- */
+        function slideS2Intro() {
+            return `
+  <h1 class="slide-title">Explorer: extra terms outside</h1>
+  <p class="lead">Sometimes there's a loose term hanging around outside the bracket too. Expand first, then <b>collect like terms</b> — terms with the same letter.</p>
+  <div class="card">
+    <p class="expr" style="margin:0 0 6px;">2(x + 3) + x</p>
+    <p style="margin:0; font-size:0.95em; color:#555;">Step 1 — expand: 2x + 6 + x<br>Step 2 — collect: 2x + x = 3x<br><b>Answer: 3x + 6</b></p>
+  </div>
+  <p>Next, try the steps yourself with the interactive walkthrough.</p>`;
+        }
+
+        function slideS2Worked1() {
+            return `
+  <h1 class="slide-title">Walkthrough: 2(x + 3) + x</h1>
+  <div class="card">
+    <p style="margin:0 0 10px;">Step 1: Expand the bracket</p>
+    <button class="step-reveal-btn" data-step="1">Show step 1</button>
+    <div class="step-line" data-line="1"></div>
+    <p style="margin:14px 0 10px;">Step 2: Bring down the leftover term</p>
+    <button class="step-reveal-btn" data-step="2">Show step 2</button>
+    <div class="step-line" data-line="2"></div>
+    <p style="margin:14px 0 10px;">Step 3: Collect like terms</p>
+    <button class="step-reveal-btn" data-step="3">Show step 3</button>
+    <div class="step-line" data-line="3"></div>
+  </div>`;
+        }
+        function slideS2Worked1_mount() {
+            const steps = {
+                1: "2(x + 3) = 2x + 6",
+                2: "2x + 6 + x",
+                3: "2x + x = 3x &nbsp;→&nbsp; <b>Final answer: 3x + 6</b>"
+            };
+            document.querySelectorAll('[data-step]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const n = btn.getAttribute('data-step');
+                    const line = document.querySelector(`[data-line="${n}"]`);
+                    line.innerHTML = steps[n];
+                    line.classList.add('show');
+                    btn.disabled = true;
+                    btn.style.opacity = 0.5;
+                });
+            });
+        }
+
+        function slideS2Worked2() {
+            return `
+  <h1 class="slide-title">Walkthrough: 5(y + 1) − 2y</h1>
+  <p class="lead">This one has a <b>minus</b> outside the bracket. Watch the sign carefully!</p>
+  <div class="card">
+    <p style="margin:0 0 10px;">Step 1: Expand 5(y + 1)</p>
+    <button class="step-reveal-btn" data-step2="1">Show step 1</button>
+    <div class="step-line" data-line2="1"></div>
+    <p style="margin:14px 0 10px;">Step 2: Bring down −2y</p>
+    <button class="step-reveal-btn" data-step2="2">Show step 2</button>
+    <div class="step-line" data-line2="2"></div>
+    <p style="margin:14px 0 10px;">Step 3: Collect the y terms</p>
+    <button class="step-reveal-btn" data-step2="3">Show step 3</button>
+    <div class="step-line" data-line2="3"></div>
+  </div>
+  <div class="card coral-edge">
+    <p style="margin:0;"><b>Sign tip:</b> 5y − 2y = 3y. The "+5" has no y attached, so it just comes along for the ride.</p>
+  </div>`;
+        }
+        function slideS2Worked2_mount() {
+            const steps = {
+                1: "5 × y = 5y &nbsp; 5 × 1 = 5 &nbsp;→&nbsp; 5y + 5",
+                2: "5y + 5 − 2y",
+                3: "5y − 2y = 3y &nbsp;→&nbsp; <b>Final answer: 3y + 5</b>"
+            };
+            document.querySelectorAll('[data-step2]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const n = btn.getAttribute('data-step2');
+                    const line = document.querySelector(`[data-line2="${n}"]`);
+                    line.innerHTML = steps[n];
+                    line.classList.add('show');
+                    btn.disabled = true;
+                    btn.style.opacity = 0.5;
+                });
+            });
+        }
+
+        function slideS2Match() {
+            return `
+  <h1 class="slide-title">Match the expression</h1>
+  <p class="lead">Tap an expression, then tap its matching simplified answer.</p>
+  <div class="match-grid" id="matchGrid">
+    <div class="match-pair">
+      <div class="match-card" data-id="e1" data-group="expr">3(x + 2)</div>
+      <div class="match-card" data-id="a3" data-group="ans">4a + 20</div>
+    </div>
+    <div class="match-pair">
+      <div class="match-card" data-id="e2" data-group="expr">4(a + 5)</div>
+      <div class="match-card" data-id="a4" data-group="ans">3y + 5</div>
+    </div>
+    <div class="match-pair">
+      <div class="match-card" data-id="e3" data-group="expr">2(x + 3) + x</div>
+      <div class="match-card" data-id="a1" data-group="ans">3x + 6</div>
+    </div>
+    <div class="match-pair">
+      <div class="match-card" data-id="e4" data-group="expr">5(y + 1) − 2y</div>
+      <div class="match-card" data-id="a2" data-group="ans">3x + 6</div>
+    </div>
+  </div>
+  <p id="matchMsg" style="text-align:center; color:var(--mint-dark); font-weight:600; margin-top:10px;"></p>`;
+        }
+        function slideS2Match_mount() {
+            const correctPairs = { e1: 'a3-wrongtag' }; // placeholder, real logic below
+            const answerKey = { e1: '3x+6_NO' };
+            // proper key: e1=3(x+2)=3x+6, e2=4(a+5)=4a+20, e3=2(x+3)+x=3x+6, e4=5(y+1)-2y=3y+5
+            const key = {
+                e1: '3x + 6',
+                e2: '4a + 20',
+                e3: '3x + 6',
+                e4: '3y + 5'
+            };
+            let selectedExpr = null;
+            const cards = document.querySelectorAll('.match-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (card.classList.contains('matched-correct')) return;
+                    const group = card.getAttribute('data-group');
+                    if (group === 'expr') {
+                        cards.forEach(c => { if (c.getAttribute('data-group') === 'expr' && !c.classList.contains('matched-correct')) c.classList.remove('selected'); });
+                        card.classList.add('selected');
+                        selectedExpr = card;
+                    } else {
+                        if (!selectedExpr) return;
+                        const exprId = selectedExpr.getAttribute('data-id');
+                        const exprText = key[exprId];
+                        const ansText = card.textContent.trim();
+                        if (exprText === ansText) {
+                            selectedExpr.classList.remove('selected');
+                            selectedExpr.classList.add('matched-correct');
+                            card.classList.add('matched-correct');
+                            selectedExpr = null;
+                            const remaining = document.querySelectorAll('.match-card[data-group="expr"]:not(.matched-correct)');
+                            if (remaining.length === 0) {
+                                document.getElementById('matchMsg').textContent = "Nice work — all matched! 🎉";
+                            }
+                        } else {
+                            card.classList.add('matched-wrong');
+                            setTimeout(() => card.classList.remove('matched-wrong'), 500);
+                        }
+                    }
+                });
+            });
+        }
+
+        /* ---- Stage 3: Builder, instant feedback ---- */
+        function buildQuestionCard(id, prompt, answer, hint) {
+            return `
+  <div class="card">
+    <p class="expr" style="margin:0 0 10px;">${prompt}</p>
+    <input class="answer-input" id="${id}_input" placeholder="Type your simplified answer, e.g. 5x + 3" autocomplete="off">
+    <button class="check-btn" id="${id}_check">Check answer</button>
+    <button class="hint-toggle" id="${id}_hintbtn">Need a hint?</button>
+    <div class="hint-box" id="${id}_hintbox">${hint}</div>
+    <div class="feedback" id="${id}_feedback"></div>
+  </div>`;
+        }
+        function normalize(s) {
+            return s.toLowerCase().replace(/\s+/g, '').replace(/×/g, '*');
+        }
+        function wireQuestion(id, acceptedAnswers, correctMsg, incorrectMsg) {
+            document.getElementById(id + '_hintbtn').addEventListener('click', () => {
+                document.getElementById(id + '_hintbox').classList.toggle('show');
+            });
+            document.getElementById(id + '_check').addEventListener('click', () => {
+                const val = normalize(document.getElementById(id + '_input').value);
+                const fb = document.getElementById(id + '_feedback');
+                const isCorrect = acceptedAnswers.map(normalize).includes(val);
+                fb.classList.add('show');
+                if (isCorrect) {
+                    fb.className = 'feedback show correct';
+                    fb.innerHTML = "✅ " + correctMsg;
+                } else if (val === '') {
+                    fb.className = 'feedback show incorrect';
+                    fb.innerHTML = "Type an answer first, then tap Check.";
+                } else {
+                    fb.className = 'feedback show incorrect';
+                    fb.innerHTML = "Not quite. " + incorrectMsg;
+                }
+            });
+        }
+
+        function slideS3Intro() {
+            return `
+  <h1 class="slide-title">Builder: your turn</h1>
+  <p class="lead">Time to try these independently. Expand the brackets, then collect like terms. Type your answer and tap <b>Check answer</b> — you'll get feedback right away.</p>`;
+        }
+
+        function slideS3Q1() {
+            return buildQuestionCard('q1', '2(x + 4)', '2x + 8',
+                "Multiply 2 by x, then 2 by 4. There's no extra term to collect here.");
+        }
+        function slideS3Q1_mount() {
+            wireQuestion('q1', ['2x+8', '8+2x'], "2(x + 4) = 2x + 8. Spot on.", "Remember: 2 multiplies <i>both</i> x and 4. Try 2×x and 2×4 separately, then add.");
+        }
+
+        function slideS3Q2() {
+            return buildQuestionCard('q2', '3(m + 2) + m', '4m + 6',
+                "Expand 3(m + 2) first to get 3m + 6. Then add the extra m: 3m + m = 4m.");
+        }
+        function slideS3Q2_mount() {
+            wireQuestion('q2', ['4m+6', '6+4m'], "3(m + 2) + m = 3m + 6 + m = 4m + 6. Great collecting!", "Expand the bracket first (3m + 6), then add the loose m term to the m's already there.");
+        }
+
+        function slideS3Q3() {
+            return buildQuestionCard('q3', '4(n + 3) − 2n', '2n + 12',
+                "Expand 4(n + 3) to get 4n + 12, then subtract 2n from the n term only.");
+        }
+        function slideS3Q3_mount() {
+            wireQuestion('q3', ['2n+12', '12+2n'], "4(n + 3) − 2n = 4n + 12 − 2n = 2n + 12. Nice sign-watching!", "Expand first: 4n + 12. Then 4n − 2n = 2n. The 12 has no n, so it stays put.");
+        }
+
+        function slideS3Activity() {
+            return `
+  <h1 class="slide-title">Spot the mistake</h1>
+  <p class="lead">A student expanded <span class="expr">3(x + 5)</span> and got <span class="expr">3x + 5</span>. What went wrong?</p>
+  <button class="option-btn" data-correct="false">They forgot to multiply at all</button>
+  <button class="option-btn" data-correct="true">They only multiplied the x, not the 5</button>
+  <button class="option-btn" data-correct="false">They added instead of multiplying</button>
+  <div class="feedback" id="mistakeFeedback"></div>`;
+        }
+        function slideS3Activity_mount() {
+            const buttons = document.querySelectorAll('#content .option-btn');
+            const fb = document.getElementById('mistakeFeedback');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.disabled = true);
+                    const correct = btn.getAttribute('data-correct') === 'true';
+                    btn.classList.add(correct ? 'correct' : 'incorrect');
+                    fb.classList.add('show', correct ? 'correct' : 'incorrect');
+                    fb.innerHTML = correct
+                        ? "✅ Exactly — the 3 has to multiply <b>every</b> term inside the brackets. The correct answer is 3x + 15."
+                        : "Not quite — look again at which terms got multiplied by 3 and which didn't. The correct expansion is 3x + 15.";
+                });
+            });
+        }
+
+        /* ---- Stage 4: Advanced ---- */
+        function slideS4Intro() {
+            return `
+  <h1 class="slide-title">Advanced: two letters at once</h1>
+  <p class="lead">So far every answer has had just one letter. Sometimes a problem has <b>two different letters</b> — you simply collect each letter separately, and leave the rest as it is.</p>
+  <div class="card">
+    <p class="expr" style="margin:0 0 8px;">2x + 3y + x − y</p>
+    <p style="margin:0; font-size:0.95em; color:#555;">Collect the x's: 2x + x = 3x<br>Collect the y's: 3y − y = 2y<br><b>Answer: 3x + 2y</b></p>
+  </div>
+  <p>x terms and y terms never combine with each other — they're not "like terms." Keep them separate.</p>`;
+        }
+
+        function slideS4Q1() {
+            return buildQuestionCard('s4q1', '3(2x + 4) − x', '5x + 12',
+                "Expand 3(2x + 4) first: 3×2x = 6x, 3×4 = 12. Then 6x − x = 5x.");
+        }
+        function slideS4Q1_mount() {
+            wireQuestion('s4q1', ['5x+12', '12+5x'], "3(2x + 4) − x = 6x + 12 − x = 5x + 12. Strong work.", "Expand first: 6x + 12. Then subtract the loose x: 6x − x = 5x.");
+        }
+
+        function slideS4Q2() {
+            return buildQuestionCard('s4q2', '2(3a − 1) + 4a', '10a − 2',
+                "Expand 2(3a − 1): 2×3a = 6a, 2×(−1) = −2. Then 6a + 4a = 10a.");
+        }
+        function slideS4Q2_mount() {
+            wireQuestion('s4q2', ['10a-2', '-2+10a'], "2(3a − 1) + 4a = 6a − 2 + 4a = 10a − 2. Negative signs handled well!", "Expand first: 6a − 2. Then add the loose 4a: 6a + 4a = 10a. The −2 stays as it is.");
+        }
+
+        function slideS4Challenges() {
+            return `
+  <h1 class="slide-title">Real-world challenges</h1>
+  <p class="lead">Apply expanding and simplifying to everyday situations. Try each one, then tap to reveal a model answer.</p>
+  <div class="simplify-toggle-wrap"><button id="wordingToggleBtn">Switch to simple wording</button></div>
+  <div class="card">
+    <p style="margin:0 0 10px;"><b>Challenge 1 — Perimeter</b></p>
+    <p id="wp_perimeter" style="margin:0 0 10px;">${wording.perimeter[state.simple ? 'simple' : 'normal']}</p>
+    <input class="answer-input" id="c1_input" placeholder="Your expression">
+    <button class="check-btn" id="c1_reveal">Show model answer</button>
+    <div class="step-line" id="c1_answer"></div>
+  </div>
+  <div class="card">
+    <p style="margin:0 0 10px;"><b>Challenge 2 — Cost</b></p>
+    <p id="wp_cost" style="margin:0 0 10px;">${wording.cost[state.simple ? 'simple' : 'normal']}</p>
+    <input class="answer-input" id="c2_input" placeholder="Your expression">
+    <button class="check-btn" id="c2_reveal">Show model answer</button>
+    <div class="step-line" id="c2_answer"></div>
+  </div>
+  <div class="card">
+    <p style="margin:0 0 10px;"><b>Challenge 3 — Area</b></p>
+    <p id="wp_area" style="margin:0 0 10px;">${wording.area[state.simple ? 'simple' : 'normal']}</p>
+    <input class="answer-input" id="c3_input" placeholder="Your expression">
+    <button class="check-btn" id="c3_reveal">Show model answer</button>
+    <div class="step-line" id="c3_answer"></div>
+  </div>`;
+        }
+        function slideS4Challenges_mount() {
+            document.getElementById('c1_reveal').addEventListener('click', () => {
+                const line = document.getElementById('c1_answer');
+                line.innerHTML = "Perimeter = 2[(x+3)+(x+1)] = 2(2x+4) = <b>4x + 8</b>";
+                line.classList.add('show');
+            });
+            document.getElementById('c2_reveal').addEventListener('click', () => {
+                const line = document.getElementById('c2_answer');
+                line.innerHTML = "3(2a+1) + 2(2a+1) = 6a+3+4a+2 = <b>10a + 5</b> pence";
+                line.classList.add('show');
+            });
+            document.getElementById('c3_reveal').addEventListener('click', () => {
+                const line = document.getElementById('c3_answer');
+                line.innerHTML = "4(y+2) + 3(y−1) = 4y+8+3y−3 = <b>7y + 5</b> m²";
+                line.classList.add('show');
+            });
+            document.getElementById('wordingToggleBtn').addEventListener('click', () => {
+                state.simple = !state.simple;
+                document.getElementById('wp_perimeter').textContent = wording.perimeter[state.simple ? 'simple' : 'normal'];
+                document.getElementById('wp_cost').textContent = wording.cost[state.simple ? 'simple' : 'normal'];
+                document.getElementById('wp_area').textContent = wording.area[state.simple ? 'simple' : 'normal'];
+                document.getElementById('wordingToggleBtn').textContent = state.simple ? "Switch to standard wording" : "Switch to simple wording";
+                syncSimpleToggleUI();
+            });
+        }
+
+        /* ---- Quiz ---- */
+        const quizScore = { correct: 0, total: 3 };
+
+        function quizQuestionCard(id, prompt, accepted, correctMsg, incorrectMsg) {
+            return `
+  <div class="card">
+    <p class="expr" style="margin:0 0 10px;">${prompt}</p>
+    <input class="answer-input" id="${id}_input" placeholder="Type your answer" autocomplete="off">
+    <button class="check-btn" id="${id}_check">Check answer</button>
+    <div class="feedback" id="${id}_feedback"></div>
+  </div>`;
+        }
+        function wireQuiz(id, accepted, correctMsg, incorrectMsg) {
+            const checkBtn = document.getElementById(id + '_check');
+            let answered = false;
+            checkBtn.addEventListener('click', () => {
+                if (answered) return;
+                const val = normalize(document.getElementById(id + '_input').value);
+                const fb = document.getElementById(id + '_feedback');
+                const isCorrect = accepted.map(normalize).includes(val);
+                fb.classList.add('show');
+                if (val === '') {
+                    fb.className = 'feedback show incorrect';
+                    fb.innerHTML = "Type an answer first.";
+                    return;
+                }
+                answered = true;
+                if (isCorrect) {
+                    quizScore.correct++;
+                    fb.className = 'feedback show correct';
+                    fb.innerHTML = "✅ " + correctMsg;
+                } else {
+                    fb.className = 'feedback show incorrect';
+                    fb.innerHTML = "❌ " + incorrectMsg;
+                }
+                checkBtn.disabled = true;
+                checkBtn.style.opacity = 0.5;
+            });
+        }
+
+        function slideQuizIntro() {
+            return `
+  <h1 class="slide-title">Knowledge check</h1>
+  <p class="lead">Three questions. You'll find out instantly whether each one is correct. Take your time — there's no clock.</p>`;
+        }
+        function slideQuiz1() {
+            return quizQuestionCard('quiz1', '3(x + 2)', null);
+        }
+        function slideQuiz1_mount() {
+            wireQuiz('quiz1', ['3x+6', '6+3x'],
+                "3(x + 2) = 3x + 6.",
+                "The correct answer is 3x + 6 — multiply 3 by x and by 2.");
+        }
+        function slideQuiz2() {
+            return quizQuestionCard('quiz2', '4(a + 5) + 2a', null);
+        }
+        function slideQuiz2_mount() {
+            wireQuiz('quiz2', ['6a+20', '20+6a'],
+                "4(a + 5) + 2a = 4a + 20 + 2a = 6a + 20.",
+                "The correct answer is 6a + 20 — expand to 4a + 20, then add the extra 2a: 4a + 2a = 6a.");
+        }
+        function slideQuiz3() {
+            return quizQuestionCard('quiz3', '3(2x + 4) − x', null);
+        }
+        function slideQuiz3_mount() {
+            wireQuiz('quiz3', ['5x+12', '12+5x'],
+                "3(2x + 4) − x = 6x + 12 − x = 5x + 12.",
+                "The correct answer is 5x + 12 — expand to 6x + 12, then 6x − x = 5x.");
+        }
+
+        function slideQuizResult() {
+            return `
+  <h1 class="slide-title" style="text-align:center;">Your results</h1>
+  <div class="quiz-result-box">
+    <div class="score-circle">${quizScore.correct}/${quizScore.total}</div>
+    <p id="resultMsg" style="font-size:1.05em;"></p>
+  </div>`;
+        }
+        function slideQuizResult_mount() {
+            const msg = document.getElementById('resultMsg');
+            if (quizScore.correct === quizScore.total) {
+                msg.textContent = "Perfect score — you've genuinely mastered expanding and simplifying!";
+            } else if (quizScore.correct >= 1) {
+                msg.textContent = "Good progress! Revisit the worked examples in Stage 2 if any of these felt tricky, then try again any time.";
             } else {
-                f.className = "feedback bad";
-                f.innerHTML = "🔍 Not quite. Remember to multiply the number outside (4) by BOTH terms inside the bracket first, then group the n terms!";
+                msg.textContent = "That's okay — algebra takes practice. Try going back through Stage 1 and 2 before another attempt.";
             }
         }
+
+        function slideCompletion() {
+            return `
+  <div class="full-screen navy-bg">
+    <div class="icon-big">🏆</div>
+    <h1>You did it!</h1>
+    <div class="stars"><span>⭐</span><span>⭐</span><span>⭐</span></div>
+    <p>You've completed <b>Unpack the Brackets</b> and mastered expanding and simplifying algebraic expressions.</p>
+    <div class="badge-row">
+      <span class="badge">Beginner ✓</span>
+      <span class="badge">Explorer ✓</span>
+      <span class="badge">Builder ✓</span>
+      <span class="badge">Advanced ✓</span>
+    </div>
+    <button class="start-btn" id="restartBtn">Restart lesson</button>
+  </div>`;
+        }
+        function slideCompletion_mount() {
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                quizScore.correct = 0;
+                state.slideIndex = 0;
+                render();
+            });
+        }
+
+        /* ================= SLIDE LIST ================= */
+        const slides = [
+            { stage: "", html: slideWelcome },
+            { stage: "Learning objectives", html: slideObjectives },
+            { stage: "Stage 1 · Beginner", html: slideS1Intro },
+            { stage: "Stage 1 · Beginner", html: slideS1Brackets, mount: slideS1Brackets_mount },
+            { stage: "Stage 1 · Beginner", html: slideS1Worked, mount: slideS1Worked_mount },
+            { stage: "Stage 2 · Explorer", html: slideS2Intro },
+            { stage: "Stage 2 · Explorer", html: slideS2Worked1, mount: slideS2Worked1_mount },
+            { stage: "Stage 2 · Explorer", html: slideS2Worked2, mount: slideS2Worked2_mount },
+            { stage: "Stage 2 · Explorer", html: slideS2Match, mount: slideS2Match_mount },
+            { stage: "Stage 3 · Builder", html: slideS3Intro },
+            { stage: "Stage 3 · Builder", html: slideS3Q1, mount: slideS3Q1_mount },
+            { stage: "Stage 3 · Builder", html: slideS3Q2, mount: slideS3Q2_mount },
+            { stage: "Stage 3 · Builder", html: slideS3Q3, mount: slideS3Q3_mount },
+            { stage: "Stage 3 · Builder", html: slideS3Activity, mount: slideS3Activity_mount },
+            { stage: "Stage 4 · Advanced", html: slideS4Intro },
+            { stage: "Stage 4 · Advanced", html: slideS4Q1, mount: slideS4Q1_mount },
+            { stage: "Stage 4 · Advanced", html: slideS4Q2, mount: slideS4Q2_mount },
+            { stage: "Stage 4 · Advanced", html: slideS4Challenges, mount: slideS4Challenges_mount },
+            { stage: "Knowledge check", html: slideQuizIntro },
+            { stage: "Knowledge check", html: slideQuiz1, mount: slideQuiz1_mount },
+            { stage: "Knowledge check", html: slideQuiz2, mount: slideQuiz2_mount },
+            { stage: "Knowledge check", html: slideQuiz3, mount: slideQuiz3_mount },
+            { stage: "Knowledge check", html: slideQuizResult, mount: slideQuizResult_mount },
+            { stage: "", html: slideCompletion, mount: slideCompletion_mount },
+        ];
+
+        /* ================= RENDER / NAV ================= */
+        function render() {
+            const i = state.slideIndex;
+            const slide = slides[i];
+            const isFullScreen = (i === 0 || i === slides.length - 1);
+
+            document.getElementById('topbar').style.display = isFullScreen ? 'none' : 'flex';
+            document.getElementById('navbar').style.display = isFullScreen ? 'none' : 'flex';
+
+            const content = document.getElementById('content');
+            content.innerHTML = `<div class="slide">${slide.stage && !isFullScreen ? `<p class="stage-label">${slide.stage}</p>` : ''}${slide.html()}</div>`;
+
+            if (slide.mount) slide.mount();
+
+            // welcome / completion buttons
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) startBtn.addEventListener('click', () => { state.slideIndex = 1; render(); });
+
+            renderDots();
+            renderNav();
+            content.scrollTop = 0;
+            applyAccessibilityToDOM();
+        }
+
+        function renderDots() {
+            const dotsEl = document.getElementById('stageDots');
+            if (!dotsEl) return;
+            const labels = ["S1", "S2", "S3", "S4", "Quiz"];
+            const ranges = [
+                { from: 2, to: 4 }, { from: 5, to: 8 }, { from: 9, to: 13 }, { from: 14, to: 17 }, { from: 18, to: 22 }
+            ];
+            dotsEl.innerHTML = '';
+            ranges.forEach((r, idx) => {
+                const dot = document.createElement('div');
+                dot.className = 'stage-dot';
+                const i = state.slideIndex;
+                if (i > r.to) dot.classList.add('done');
+                else if (i >= r.from && i <= r.to) dot.classList.add('active');
+                dotsEl.appendChild(dot);
+            });
+        }
+
+        function renderNav() {
+            const backBtn = document.getElementById('backBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const navProgress = document.getElementById('navProgress');
+            if (!backBtn) return;
+            const i = state.slideIndex;
+            backBtn.disabled = (i <= 1);
+            navProgress.textContent = `${i} / ${slides.length - 2}`;
+            nextBtn.textContent = (i === slides.length - 2) ? "Finish →" : "Next →";
+            backBtn.onclick = () => { if (i > 1) { state.slideIndex--; render(); } };
+            nextBtn.onclick = () => {
+                if (i < slides.length - 1) { state.slideIndex++; render(); }
+            };
+        }
+
+        /* ================= ACCESSIBILITY ================= */
+        function applyAccessibilityToDOM() {
+            document.documentElement.style.setProperty('--base-size', state.fontSize + 'px');
+            document.body.style.fontSize = state.fontSize + 'px';
+            document.body.classList.toggle('dyslexia', state.dyslexia);
+        }
+        function syncSimpleToggleUI() {
+            const t = document.getElementById('simpleToggle');
+            if (t) t.classList.toggle('on', state.simple);
+        }
+
+        document.getElementById('accessBtn').addEventListener('click', () => {
+            document.getElementById('accessPanel').classList.toggle('open');
+        });
+        document.getElementById('sizeUp').addEventListener('click', () => {
+            state.fontSize = Math.min(state.fontSize + 2, 24);
+            applyAccessibilityToDOM();
+        });
+        document.getElementById('sizeDown').addEventListener('click', () => {
+            state.fontSize = Math.max(state.fontSize - 2, 13);
+            applyAccessibilityToDOM();
+        });
+        document.getElementById('dyslexiaToggle').addEventListener('click', (e) => {
+            state.dyslexia = !state.dyslexia;
+            e.currentTarget.classList.toggle('on', state.dyslexia);
+            applyAccessibilityToDOM();
+        });
+        document.getElementById('simpleToggle').addEventListener('click', (e) => {
+            state.simple = !state.simple;
+            e.currentTarget.classList.toggle('on', state.simple);
+            // if currently on a slide showing wording, refresh it
+            render();
+        });
+
+        /* init */
+        render();
     </script>
 </body>
 
